@@ -8,7 +8,7 @@ package leetcode.array
  * time:    2020/9/5 10:00
  */
 fun main() {
-    moveZeroes(intArrayOf(0, 1, 0, 3, 12))
+    moveZeroes(intArrayOf(0, 1, 4, 3, 12))
 //    leetcode.array.moveZeroes(intArrayOf(2,1))
 //    leetcode.array.moveZeroes(intArrayOf(1))
 }

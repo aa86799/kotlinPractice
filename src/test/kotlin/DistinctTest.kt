@@ -26,6 +26,6 @@ class DistinctTest {
         list2.distinctBy {it.b / 1000}.map { Data(it.a, it.b / 1000) } .forEach {
             println(it)
         }
-        assert(list.size > 0)
+        assert(list.isNotEmpty())
     }
 }
