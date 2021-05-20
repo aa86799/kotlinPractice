@@ -45,7 +45,7 @@ object RangeAction {
         }
 
         val check = range.all { it  >= 0 } //all match fun expression
-        println("stone--range5-->${range.step(3)}》$check ${range.max()} ${range.count()}")
+        println("stone--range5-->${range.step(3)}》$check ${range.maxOrNull()} ${range.count()}")
 
         /*
         range type is IntProgression

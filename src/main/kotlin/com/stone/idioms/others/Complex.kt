@@ -190,7 +190,7 @@ fun main(args: Array<String>) {
     val array = complex.arrayOfMinusOnes(5)
     for (index in array.indices) {
         print("${array[index]} ")
-        if (index == array.indices.max()) {
+        if (index == array.indices.maxOrNull()) {
             println()
         }
     }
