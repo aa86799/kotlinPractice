@@ -1,17 +1,17 @@
 package datastruct.wz.link
 
 /**
- * desc:    单链表实现LRU.
+ * desc:    双向链表实现LRU.
  *          最近访问的越靠近链表头部，越早访问的越靠近尾部。
  *
  * author:  stone
  * email:   aa86799@163.com
  * blog :   https://stone.blog.csdn.net
- * time:    2021/4/24 17:45
+ * time:    2021/5/16 20:45
  */
-class LRUList<T> {
+class DoubleNodeLru<T> {
 
-    inner class Node<T> constructor(val data: T?, var next: Node<T>?)
+    inner class Node<T> constructor(val data: T?, var prev: Node<T>?, var next: Node<T>?)
 
     var mHead: Node<T>? = null
     private val mCapacity = 7  //缓存容量
@@ -22,26 +22,16 @@ class LRUList<T> {
             removeLast()
         }
 
-        val newNode = Node(e, mHead)
+        val newNode = Node(e, null, mHead)
+        mHead?.prev = newNode
         mHead = newNode// 直接插入到头部
         mSize++
-
     }
 
-    //查找 date == e 结点
     private fun search(e: T): Node<T>? {
         var p = mHead
         while (p != null && p.data != e) {
             p = p.next
-        }
-        return p
-    }
-
-    //由于单链表的删除、插入，需要前驱结点。
-    private fun searchPrev(node: Node<T>): Node<T> {
-        var p = mHead
-        while (p?.next != node) {
-            p = p?.next
         }
         return p
     }
@@ -51,16 +41,11 @@ class LRUList<T> {
             mHead = null
             return
         }
-        //此时链表中至少有两个结点
         var p = mHead
-        var q = p?.next
-        while (q?.next != null) {
-            p = q
-            q = p.next
+        while (p?.next != null) {
+            p = p.next
         }
-        //q?.next == null, 循环结束，表示是尾结点
-        q = null
-        p?.next = null
+        p?.prev?.next = null
         mSize--
     }
 
@@ -74,16 +59,21 @@ class LRUList<T> {
     fun removeLostForRecursive() {
         if (mHead?.next == null) {
             mHead = null
+            return
         } else {
             //此时链表中至少有两个结点
-            realRemoveLostForRecursive(mHead!!, mHead?.next!!)
+            realRemoveLostForRecursive(mHead?.next!!)
+            mSize--
         }
-        mSize--
     }
 
-    private fun realRemoveLostForRecursive(p: Node<T>, q: Node<T>?) {
-        if (q?.next == null) p.next = null
-        else realRemoveLostForRecursive(q, q.next)
+    private fun realRemoveLostForRecursive(p: Node<T>?) {
+        println("xx: ${p?.data}")
+        if (p?.next == null) {
+            println("yy: ${p?.data}   ${p?.prev?.data}")
+            p?.prev?.next = null
+        }
+        else realRemoveLostForRecursive(p.next)
     }
 
     /*
@@ -97,10 +87,14 @@ class LRUList<T> {
         if (findNode == null) {//没找到，就insert
             insertFirst(e)
         } else {//找到了
-            val prev = searchPrev(findNode)
-            prev.next = findNode.next //先移出了 findNode
-            findNode.next = mHead  //findNode置前
-            mHead = findNode
+            if (findNode.prev != null) {
+                findNode.prev?.next = findNode.next
+                findNode.next?.prev = findNode.prev  //没有这句，可以遍历；但删除时就报错了
+                findNode.next = mHead
+                findNode.prev = null
+                mHead?.prev = findNode
+                mHead = findNode
+            }
         }
     }
 
@@ -114,18 +108,24 @@ class LRUList<T> {
 }
 
 fun main() {
-    val list = LRUList<Int>()
+    val list = DoubleNodeLru<Int>()
     list.access(5)
+    list.access(7)
+//    list.display()
+//    println()
+//    list.removeFirst()
+//    list.removeLast()
+//    list.display()
+    println()
+    list.access(8)
     list.access(7)
     list.display()
     println()
     list.removeLostForRecursive()
-//    list.removeFirst()
-//    list.removeLast()
     list.display()
     println()
-    list.access(8)
-    list.access(7)
+//    list.removeLostForRecursive()
+
     list.access(4)
     list.access(1)
     list.access(2)
