@@ -60,11 +60,10 @@ class DoubleNodeLru<T> {
         if (mHead?.next == null) {
             mHead = null
             return
-        } else {
-            //此时链表中至少有两个结点
-            realRemoveLostForRecursive(mHead?.next!!)
-            mSize--
         }
+        //此时链表中至少有两个结点
+        realRemoveLostForRecursive(mHead?.next!!)
+        mSize--
     }
 
     private fun realRemoveLostForRecursive(p: Node<T>?) {
@@ -72,6 +71,7 @@ class DoubleNodeLru<T> {
         if (p?.next == null) {
             println("yy: ${p?.data}   ${p?.prev?.data}")
             p?.prev?.next = null
+            p?.prev = null
         }
         else realRemoveLostForRecursive(p.next)
     }
