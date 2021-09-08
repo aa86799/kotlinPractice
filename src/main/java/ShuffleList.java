@@ -1,11 +1,10 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 class ShuffleList {
     private static List<String> mActionList;
     private static Random random = new Random();
     static List<Integer> randomIndexList;
+    static LinkedHashMap<Integer, String> randomMap;
 
     public static void main(String[]args){
         mActionList = new ArrayList<String>();
@@ -13,8 +12,26 @@ class ShuffleList {
         mActionList.add("nod");
         mActionList.add("ShakeHead");
 
-        shuffle();
-        System.out.println(mActionList);
+//        shuffle();
+//        System.out.println(mActionList);
+
+        shuffleOpt();
+        System.out.println(randomMap.values());
+    }
+
+    static void shuffleOpt() {
+        if (!mActionList.isEmpty()) {
+            randomMap = new LinkedHashMap<>();
+            int size = mActionList.size();
+            for (int i = 0; i < size;) {
+                int index = random.nextInt(size);
+                if (randomMap.containsKey(index)) {
+                    continue;
+                }
+                randomMap.put(index, mActionList.get(index));
+                i++;
+            }
+        }
     }
 
     static void shuffle() {
