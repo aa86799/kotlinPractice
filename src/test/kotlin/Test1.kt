@@ -1,6 +1,8 @@
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import java.io.File
+import java.math.BigDecimal
+import java.nio.charset.Charset
 import java.time.ZoneId
 import java.util.*
 import kotlin.math.abs
@@ -9,6 +11,25 @@ class Test1 {
 
     @Test
     fun testMySuspendingFunction() = runBlocking<Unit> {
+        val gitVersionProcess = ProcessBuilder("git", "-version").start()
+        gitVersionProcess.waitFor()
+        val gitVersion = gitVersionProcess.inputStream.readBytes().toString(Charset.forName("utf-8"))
+        println(gitVersion)
+
+
+        /*(0..100).forEach {
+            val snum = "$it.99"
+//            val dnumber = snum.toDouble() * 100.00 // double 计算精度有问题
+            val dnumber = BigDecimal(snum).multiply(BigDecimal(100))
+            println(dnumber)
+        }*/
+
+        println("abc/cef/gbh.jpg".substringAfter("/"))
+        println("abc/cef/gbh.jpg".substringAfterLast("/"))
+        println("abc/cef/gbh.jpg".substringBefore("/"))
+        println("abc/cef/gbh.jpg".substringBeforeLast("/"))
+        println("abc/cef/gbh.jpg".substringAfterLast("/").substringBefore("."))
+
         val a = false
         val b = false
         val c = true
