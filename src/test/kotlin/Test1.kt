@@ -11,11 +11,17 @@ class Test1 {
 
     @Test
     fun testMySuspendingFunction() = runBlocking<Unit> {
+        val aa: Int? = null
+        aa ?: return@runBlocking
+
         val gitVersionProcess = ProcessBuilder("git", "-version").start()
         gitVersionProcess.waitFor()
         val gitVersion = gitVersionProcess.inputStream.readBytes().toString(Charset.forName("utf-8"))
         println(gitVersion)
 
+        println("reg: ${Regex("\\*d\\*").matches("*d*")}") // true
+        println("reg: ${Regex("0\\d{8}").matches("012341234")}") // true  0后，8位数字
+        println("reg: ${Regex("0\\d{6,8}").matches("01234123")}") // true  0后，6到8位数字
 
         /*(0..100).forEach {
             val snum = "$it.99"
