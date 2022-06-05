@@ -1,18 +1,13 @@
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import java.io.File
-import java.math.BigDecimal
 import java.nio.charset.Charset
-import java.time.ZoneId
-import java.util.*
-import kotlin.math.abs
 
 class Test1 {
 
     @Test
     fun testMySuspendingFunction() = runBlocking<Unit> {
-        val aa: Int? = null
-        aa ?: return@runBlocking
+//        val aa: Int? = null
+//        aa ?: return@runBlocking
 
         val gitVersionProcess = ProcessBuilder("git", "-version").start()
         gitVersionProcess.waitFor()
