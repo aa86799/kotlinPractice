@@ -30,4 +30,34 @@ fun main(args: Array<String>) {
     for ((index, value) in ary.withIndex()) {//winIndex 返回 Iterable<IndexedValue<T>>
         println("the element at $index is $value")
     }
+
+    /* 高阶函数实现迭代 foreach、foreachIndexed */
+    val aa = 10
+//    aa.also out@{  }
+    with (aa) outForEach@{
+//    run out@{
+        (1..8).forEach fe@{
+            if (it % 2 == 0) {
+                return@fe   // 只是相当于 continue . 不定义label@， 默认就是扩展高阶函数名  forEachIndexed
+//                return@outForEach // 相当于 break
+            }
+            println("forEach: $it")
+        }
+
+    }
+
+    (1..8).onEach {
+        if (it > 2) return@onEach
+        println("onEach: $it")
+    }
+
+    with (1..8) {
+        this.forEach fe@{
+            if (it % 2 == 0) {
+                return@with
+            }
+            println("forEach: $it")
+        }
+    }
+
 }
