@@ -5,6 +5,15 @@ import java.nio.charset.Charset
 class Test1 {
 
     @Test
+    fun testFangdai() {
+        val dkje = 100_000
+        val yll = 4.65 / 100 / 12
+        val ys = 240.0
+            var yhjeCalc = (dkje * yll * Math.pow(1+yll, ys)) / (Math.pow(1+yll, ys) - 1)
+        println("月还：$yhjeCalc")
+    }
+
+    @Test
     fun testMySuspendingFunction() = runBlocking<Unit> {
 //        val aa: Int? = null
 //        aa ?: return@runBlocking
