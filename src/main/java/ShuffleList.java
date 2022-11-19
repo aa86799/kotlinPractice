@@ -2,7 +2,7 @@ import java.util.*;
 
 class ShuffleList {
     private static List<String> mActionList;
-    private static Random random = new Random();
+    private static final Random random = new Random();
     static List<Integer> randomIndexList;
     static LinkedHashMap<Integer, String> randomMap;
 
