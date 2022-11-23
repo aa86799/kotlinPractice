@@ -15,7 +15,7 @@ import kotlin.system.measureTimeMillis
  * time:    2020/1/8 21:37
  */
 /*
- * Flow 异步流
+ * Flow 冷流
  * 挂起函数能返回一个异步值，如何返回多个异步计算的值呢？ Flow 可以。
  */
 
@@ -204,26 +204,28 @@ fun main() = runBlocking {
     println("Collected in $timeX ms")
 
     /*
-     * 类似 Sequence.zip 。对两个 Flow 进行组合。
+     * 类似 Sequence.zip 。对两个 Flow 进行合并。
+     * flow1 中的发射项 一定要组合一个 flow2中的发射项。若数量不匹配，那多余的不会被 collect
+     * 输出：1 -> one   2 -> two    3 -> three
      */
-    val nums = (1..3).asFlow() // numbers 1..3
-    val strs = flowOf("one", "two", "three") // strings
+    val nums = (1..3).asFlow().onEach { delay(100) } // numbers 1..3
+    val strs = flowOf("one", "two", "three", "four").onEach { delay(220) } // strings
     nums.zip(strs) { a, b -> "$a -> $b" } // compose a single string
         .collect { println(it) } // collect and print
-
     /*
-     * Combine
-     *
-     * 重新计算combine(flow) 中参数flow的上游发射值。
+     * 重新计算combine(flow) 中参数flow的上游发射值。组合两个 Flow 的 emit 值。中间可能丢弃某个流中的已发射数据
      * 会输出：
-     *      1 one
      *      2 one
-     *      2 two
+     *      3 one
      *      3 two
      *      3 three
+     *  flow1 每个 delay 180; 其发射第2个时，delay 了360，要若发射第3个，需要 delay 540；
+     *  flow2 发射第1个 delay 400， 360 < 400 < 540； 所以 flow1中取的是 2；第一组合就是 2-one。
+     *  类推， flow1-3需要时间 540；flow2-two 需要时间 800; 400 < 540 < 800，第二组合就是 3-one。
+     *      flow1-3 之后没有其它从 flow1中发出；后续 组合就有 3-two 3-three
      */
-    val numsX = (1..3).asFlow().onEach { delay(300) } // numbers 1..3 every 300 ms
-    val strsX = flowOf("one", "two", "three").onEach { delay(400) } // strings every 400 ms
+    val numsX = (1..3).asFlow().onEach { delay(180) }
+    val strsX = flowOf("one", "two", "three").onEach { delay(400) }
     val startTime = System.currentTimeMillis() // remember the start time
     numsX.combine(strsX) { a, b -> "$a -> $b" } // compose a single string with "combine"
         .collect { value -> // collect and print
@@ -232,14 +234,17 @@ fun main() = runBlocking {
 
     /*
      * flatMapConcat 操作符，将上游的流中所有发射的元素，平铺后，合并一个变换函数，返回变换后的流。类型可以变换。
-     *      下例，会输出 11 22 33 。变换完一个，才继续变换下一个。
+     *      下例，会输出 1first 1-Second; 2-first 2-Second; 3-first 3-Second 。变换完一个，才继续变换下一个。
+     * 耗时 3*100 + 3*500 ==> 1800ms
      *
      * flatMapMerge ，内部会先将 上游的 Flow，进行map变换，即调用例子中的 requestFlow(it)；
-     *      整体一起去(并发性的)变换， 会输出  123 123
+     *      整体一起去(并发性的)变换， 会输出  1-first 2-first 3-first ; 1-Second 2-Second 3-Second
+     * 耗时 100*3 + 500 ==> 800ms
      *
      * flatMapLatest, 与 collectLatest 类似；
      *      对于快速的操作没有影响；对于慢速的，后一个启动时，会取消前一个没开始的；
-     *      这里 requestFlow() 对应的是发射动作，最终只有最后个delay()后的反射才有效； 输出 1233
+     *      这里 requestFlow() 对应的是发射动作，最终只有最后个delay()后的发射才有效； 输出 1-first,2-first,3-first,3-second
+     * 耗时 100*3 + 500 ==> 800ms
      *
      */
     fun requestFlow(i: Int): Flow<String> = flow {
