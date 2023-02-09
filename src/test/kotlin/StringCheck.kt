@@ -20,7 +20,8 @@ class StringCheck {
         val idStart = address.lastIndexOf("/") + 1
         val id = address.substring(idStart)
         assert(id.length == 7)
-
         println(id)
+        println(address.substring("https://abc.efg.com".length + 1, idStart - 1))
+
     }
 }
