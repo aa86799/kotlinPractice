@@ -23,5 +23,57 @@ class StringCheck {
         println(id)
         println(address.substring("https://abc.efg.com".length + 1, idStart - 1))
 
+        val list = mutableListOf(1, 2, 3)
+        list.add(1, 10)
+        println(list)
+        list.add(4, 20)
+        println(list)
+
+
+//        (1..4).also { range ->
+//            range.forEach fe@{
+//                if (it % 2 == 0) {
+////                    return@also
+//                }
+//                println("forEach: $it")
+//                if (it % 3 == 0) {
+//                    return@fe // 相当于 java continue
+//                }
+//                println("xxx $it")
+//            }
+//        }
+
+        (1..4).forEach {
+            if (it % 2 == 0) {
+//                    return@also
+            }
+            println("forEach: $it")
+            if (it % 3 == 0) {
+                return@forEach // 相当于 java continue
+            }
+            println("xxx $it")
+        }
+
+        println("---------")
+        val rate = 6.6 // $/￥ exchange rate
+        val scale = 1/250.0 // day scale
+        println(scale)
+        println(scale*24*12) // year scale
+        val b = 5000_00 // capital
+        var sum = 0.0
+        println("-----month----")
+        (1..24).forEach {// month sum
+            sum += b*scale
+        }
+        println(sum)
+        println(sum/b)
+        println(sum*rate/100) // real profit
+        println("-----year----")
+        (1..(24*12)).forEach {// month sum
+            sum += b*scale
+        }
+        println(sum)
+        println(sum/b)
+        println(sum*rate/100) // real profit
     }
 }

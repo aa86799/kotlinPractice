@@ -110,4 +110,22 @@ fun main(args: Array<String>) {
         true
     }
 
+    println("""  
+        a
+        b
+        c
+    """.trimIndent()) // 去除的是 每行的缩进；使输出从第一个字符开始；
+
+    println("""cc  
+        a
+b
+        c
+  cc""".trimIndent()) //
+
+    println("""
+FF  
+        a
+b
+        c
+FF""".trimIndent()) // 建议还是，在两个格式引号的同一行的前后不要添加文本，仅在中间行上有
 }
