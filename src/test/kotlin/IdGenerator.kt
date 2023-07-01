@@ -37,4 +37,17 @@ Y值： 0 1 2 3 4 5 6 7 8 9 10
         println(verifyAry[mol])
         println(verifyAry[molIndexAry[mol]])
     }
+
+    @Test
+    fun testFlatMap() {
+        val list = ArrayList<ArrayList<T_User>>()
+        val sub1 = arrayListOf(T_User("11"), T_User("22"))
+        val sub2 = arrayListOf(T_User("33"))
+        list.add(sub1)
+        list.add(sub2)
+        assert(list.flatMap { it }.size == 3)
+
+    }
 }
+
+private data class T_User(val name: String)

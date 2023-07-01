@@ -1,6 +1,7 @@
 package com.stone.features
 
 import kotlin.reflect.cast
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 
@@ -84,8 +85,7 @@ fun testTime() {
      * elapsedNow() 到现在的运行时间。调用一次就会被标记一次
      *      如下测试，结果是两次间隔时间非常短
      */
-    println(TimeSource.Monotonic.markNow().elapsedNow().inSeconds)
-    println(TimeSource.Monotonic.markNow().elapsedNow().inSeconds)
+    println(TimeSource.Monotonic.markNow().elapsedNow().toDouble(DurationUnit.SECONDS))
 }
 
 @OptIn(ExperimentalStdlibApi::class)

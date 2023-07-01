@@ -1,3 +1,6 @@
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.junit.Test
 
 class UnicodeTest {
@@ -14,5 +17,19 @@ class UnicodeTest {
         val unicode = Integer.toHexString(charSymbol.code)
         println("\\u$unicode")
         println(Integer.parseInt(unicode, 16)) // => 10进制
+
+        val intTen = Integer.parseInt(unicode, 16)
+        println(Integer.toHexString(intTen).toCharArray())
+
+        // 测试 repeat()
+        GlobalScope.launch {
+            repeat(3) {
+                println(it)
+                delay(1000)
+            }
+            delay(2000)
+            println("end")
+        }
+        Thread.sleep(10000)
     }
 }
