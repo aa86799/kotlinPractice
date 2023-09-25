@@ -49,14 +49,41 @@ inline fun foo(inlined: () -> Unit, noinline notInlined: () -> Unit) {
 这是局部return
  */
 inline fun ordinaryFunction(op: ()->Unit) {
-
+    op()
 }
 fun foo2() {
     ordinaryFunction {
+        println("执行 op, 退出了 foo2()")
 //       return@ordinaryFunction  // ERROR: can not make `foo` return here
        return  // success
     }
     println("foo2")
+}
+
+inline fun foreachMy(list: List<Int>, op: (Int) -> Unit) {
+    for (item in list) op(item)
+}
+
+fun testForeachMy() {
+    foreachMy(listOf(1,2,3)) {
+        println("foreachMy-$it")
+
+//        println("call return")
+//        return // 退出了 testForeachMy()  不再向下执行
+
+        println("call return@foreachMy")
+        return@foreachMy // 中止foreachMy的内部的一次函数调用，后续循环中的不影响， 相当于 continue 效果，会继续下一次
+    }
+    println("foreachMy() 调用后")
+
+    listOf(1,2,3).also {
+        foreachMy(it) {
+            println("2. foreachMy-$it")
+            return@also // 中止foreachMy()
+        }
+    }
+    println("2. foreachMy() 调用后")
+
 }
 
 class TT {
@@ -198,6 +225,8 @@ fun main(args: Array<String>) {
 //    String::class.members  //会报错，kotlin并没有对所有java中的Class都支持
 
     println(xoo)
+
+    testForeachMy()
 }
 
 
