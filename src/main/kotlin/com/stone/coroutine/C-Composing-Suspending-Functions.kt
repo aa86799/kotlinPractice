@@ -36,17 +36,24 @@ fun main() = runBlocking {
     println("0.Completed in $time ms")
 
     /*
-     * async 与 launch 类似，它启动一个单独的协同程序，这是一个轻量级线程，与所有其他协同程序并发工作。
-     * async 是异步的，返回 Deferred<T> ；launch 返回 Job；Deferred<T> : Job
-     * Deferred 是异步、可取消，含有结果。通过 挂起函数 await() 获取它的最终结果。
+     * async 与 launch 类似，它启动一个单独的协同程序 即子协程，与所有其他协同程序并发工作，并不会直接启动异步线程，可通过 入参 Dispatchers 对象，启动异步线程。
+     * async 返回 Deferred<T> ；launch 返回 Job；Deferred<T> : Job
+     * Deferred 是一个非阻塞的可取消的 future，是一个带有结果的Job。通过 挂起函数 await() 获取它的最终结果。
      * 如下，在打印方法中调用两上 Deferred对象的await() 实现了并发，提高了运行速度。
      *
      * 而如果，直接 one = async{one()}.await() ，再 two = ...；则没有并发。
-     * 因为 await()是挂起函数，one挂起，直接到有了结果后；才执行two，那就是顺序执行了。
+     * 因为 await()是挂起函数，one挂起，直到有了结果后；才执行two，那就是顺序执行了。
+     * 这里的并发原理是：并发了 两个子协程
      */
-    val time1 = measureTimeMillis {
-        val one = async { doSomethingUsefulOne() }
-        val two = async { doSomethingUsefulTwo() }
+    val time1 = measureTimeMillis { // 时间仅比500ms稍大，但 小于 1000ms 那说明就是并发的。注：doSomethingUsefulOne/Two() 中各 delay(500)
+        val one = async(Dispatchers.Default) {
+            println("async1 thread: ${Thread.currentThread().name}")
+            doSomethingUsefulOne()
+        }
+        val two = async {
+            println("async2 thread: ${Thread.currentThread().name}")
+            doSomethingUsefulTwo()
+        }
         println("The answer is ${one.await() + two.await()}")
     }
     println("1.Completed in $time1 ms")
