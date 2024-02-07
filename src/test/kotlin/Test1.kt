@@ -87,5 +87,11 @@ class Test1 {
 //        val name = "file:///sdcard/abc/ddd/efg.jpg"
 //        println(File(name).name)
 //        assert(File(name).name == name) // efg.jpg != name
+
+        val list = mutableListOf<Int>()
+        println(list.joinToString(","))
+        val list1 = listOf(1,2,3)
+        println(list1.joinToString(","))
+
     }
 }
